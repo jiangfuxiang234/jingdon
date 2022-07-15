@@ -1,0 +1,80 @@
+<ul class="menuList">
+    <li><a href="#">asdf</a> <span>/</span> <a href="#"></a></li>
+</ul>
+<div class="menuContent">
+    <div class="tabs">
+
+    </div>
+    <div class="details">
+        <!--  <dl>
+            <dt></dt>
+            <dd></dd>
+        </dl> -->
+    </div>
+</div>
+
+<script>
+    (function () {
+        var menuData = null; //存储生成的所有数据
+        $.ajax({
+            url: '/menu',
+            dataType: 'json',
+            success: function (res) {
+                menuData = res.data;
+                renderMenuList(res.data)
+            }
+        })
+
+        function renderMenuList(data) { // 渲染左边的菜单列表
+            var li = '';
+            data.forEach(function (item) {
+                var a = '';
+                item.titles.forEach(function (item) {
+                    a += '<a href="' + item.href + '">' + item.name + '</a><span>/</span>';
+                })
+                li += '<li>' + a.substr(0, a.length - 15) + '</li>'; // a.length-15是去除最后一个/, 也就是<span>/</span>
+            })
+            $('.menuList').html(li);
+        }
+        $('.menu').on('mouseenter', 'li', function () { // 鼠标移入移出效果 右边菜单显示隐藏
+            $(this).addClass('active').siblings().removeClass('active'); // 这里的active效果是背景变灰，字体变红是hover的效果
+            var index = $(this).index();
+            renderMenuContent(menuData[index].content)
+        }).on('mouseleave', function () { // 离开是要在整个menu离开后的效果，所以这里不用事件捕获
+            $('.active').removeClass('active');
+            $('.menuContent').hide()
+        })
+
+
+        //渲染右边的列表 
+        function renderMenuContent(data) {
+            // console.log(data);
+            var tabs = data.tabs;
+            var details = data.details;
+            var tabA = '';
+            tabs.forEach(function(item){
+                tabA += `<a href = "${item.href}">${item.name}<i class="iconfont icon - you"></i></a>`
+            })
+            $('.menuContent .tabs').html(tabA);
+
+            var dl = '';
+            details.forEach(function(item){
+                var dt = `<dt><a href="${item.category.href}">${item.category.name}<i class = "iconfont icon-you"></i></a></dt>`
+                var a = '';
+                item.items.forEach(function(item){
+                    a += `<a href="${item.href}">${item.name}</a>`
+                })
+                var dd = `<dd>${a}</dd>`;
+                    dl += `<dl>${dt + dd}</dl>`
+            })
+            $('.menuContent .details').html(dl);
+            $('.menuContent').show();
+
+        }
+
+        // $('.menu').mouseleave(function () {
+        //     $('.menuContent').hide();
+        //     $('.active').removeClass('active')
+        // })
+    })();
+</script>

@@ -1,0 +1,70 @@
+<div class="cutdown">
+    <a href="#">
+        <h3>京东秒杀</h3>
+        <p><strong>22:00</strong> 点场 倒计时</p>
+        <div>
+            <span class="hour">48</span>
+            <span class="minute">25</span>
+            <span class="second">31</span>
+        </div>
+    </a>
+</div>
+
+<div class="seckillList"></div>
+<div class="seckillBrand"></div>
+
+<script>
+    (function () {
+        //倒计时
+        var endTime = new Date('2022-04-05 22:00');
+        var timer = setInterval(function () {
+            var nowTime = new Date();
+
+            var disTime = endTime.getTime() - nowTime.getTime();
+
+            if (disTime < 0) {
+                clearInterval(timer);
+            } else {
+                var hour = parseInt(disTime / 1000 / 60 / 60);
+                var minutes = parseInt(disTime / 1000 / 60 % 60);
+                var seconds = parseInt(disTime / 1000 % 60);
+
+                if(hour<10){
+                    hour='0'+hour;
+                }
+                if(minutes<10){
+                    minutes='0'+minutes;
+                }
+                if(seconds<10){
+                    seconds='0'+seconds;
+                }
+
+                $('.cutdown .hour').html(hour);
+                $('.cutdown .minute').html(minutes);
+                $('.cutdown .second').html(seconds);
+            }
+        }, 1000)
+
+        //加载两个轮播图
+        //$('.seckillList').load('list.html',function(){
+       $('.seckillList').load('../components/seckill/list.html',function(){
+           $(this).carousel({
+               list: $(this).find('.listItem'),
+               type: 'animate',
+               navShow: false,
+               duration: 10000,
+           })
+       })
+       $('.seckillBrand').load('../components/seckill/brand.html', function(){
+           $(this).carousel({
+               list: $(this).find('.brandItem'),
+               type: 'animate',
+               changeBtn: 'hide',
+               
+               duration: 2000,
+               navColor: '#999'
+           })
+       })
+    })()
+
+</script>
